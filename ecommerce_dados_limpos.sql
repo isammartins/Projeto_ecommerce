@@ -1,92 +1,127 @@
--- CREATE TABLE ecommerce(
--- InvoiceNo VARCHAR(200),
--- StockCode VARCHAR(200),
--- Quantity INT,
--- InvoiceDate TIMESTAMP,
--- UnitPrice DECIMAL(10,2),
--- CustomerID INT,
--- Country VARCHAR(200),
--- Description_official TEXT
--- );
-
--- CREATE TABLE countries(
--- id SERIAL PRIMARY KEY,
--- country VARCHAR(200)
--- );
-
--- INSERT INTO countries (country)
--- SELECT DISTINCT
--- e.Country
--- FROM ecommerce AS e
--- ORDER BY e.country ASC;
-
--- SELECT * FROM countries
-
--- CREATE TABLE customers(
--- id INT PRIMARY KEY
--- );
-
--- INSERT INTO customers(id)
--- SELECT DISTINCT e.CustomerID
--- FROM ecommerce as e;
-
--- SELECT * FROM customers
-
--- SELECT e.CustomerID, c.id FROM ecommerce e
--- INNER JOIN countries c ON c.country = e.Country 
--- ORDER BY e.CustomerID ASC;
-
--- CREATE TABLE customer_country AS
--- SELECT DISTINCT 
--- c.id AS "id_country",
--- e.CustomerID AS "id_customer"
--- FROM ecommerce AS e
--- INNER JOIN 
--- countries c ON c.country = e.country
--- ORDER BY e.CustomerID ASC;
-
--- SELECT * FROM customer_country
-
--- SELECT *
--- FROM customer_country
--- WHERE id_customer = 12457;
-
--- CREATE TABLE products(
--- id VARCHAR(200) PRIMARY KEY,
--- description TEXT
--- );
-
--- INSERT INTO products(id, description)
--- SELECT DISTINCT
--- e.StockCode,
--- e.Description_official
--- FROM ecommerce e
-
--- SELECT * FROM products
-
--- CREATE TABLE invoices(
--- id VARCHAR(200) PRIMARY KEY
--- );
-
--- INSERT INTO invoices(id)
--- SELECT DISTINCT 
--- e.InvoiceNo
--- FROM ecommerce e
-
--- SELECT * FROM invoices
-
-CREATE TABLE prod_inv AS 
-SELECT DISTINCT 
-i.id AS "id_invoice", 
-e.Quantity AS "quantity",
-e.InvoiceDate AS "date",
-e.UnitPrice AS "price",
-p.id AS "id_product"
-FROM products p
-INNER JOIN ecommerce e 
-ON p.id = e.stockcode
-INNER JOIN invoices i
-ON i.id = e.invoiceno
-
-SELECT * FROM prod_inv
-
+--create table ecommerce(
+--InvoiceNo VARCHAR(200),
+--StockCode VARCHAR(200),
+--Quantity INT,
+--InvoiceDate TIMESTAMP,
+--UnitPrice DECIMAL(10, 2),
+--CustomerID INT,
+--Country VARCHAR(200),
+--Description_official TEXT
+--);
+--
+--create table countries(
+--id serial primary key,
+--country varchar(200)
+--);
+--
+--insert
+--	into
+--	countries(country)
+--select
+--	distinct 
+--e.Country
+--from
+--	ecommerce as e
+--order by
+--	e.Country asc;
+--
+--create table customers(
+--id int primary key
+--);
+--
+--insert
+--	into
+--	customers(id)
+--select
+--	distinct 
+--e.CustomerID
+--from
+--	ecommerce e
+--order by
+--	e.customerID asc;
+--
+--create table country_customer(
+--id_country int,
+--id_customer int,
+--foreign key (id_country) references countries(id),
+--foreign key (id_customer) references customers(id)
+--);
+--
+--insert
+--	into
+--	country_customer(id_country, id_customer)
+--select
+--	distinct
+--c.id as id_country,
+--	e.CustomerID as id_customer
+--from
+--	ecommerce e
+--inner join 
+--countries c on
+--	e.country = c.country
+--
+--create table products(
+--id varchar(200) primary key,
+--description text
+--);
+--
+--insert
+--	into
+--	products(id, description)
+--select
+--	distinct 
+--e.Stockcode,
+--	e.Description_official
+--from
+--	ecommerce e
+--	
+--create table invoices(
+--id varchar(200) primary key,
+--id_customer int,
+--foreign key (id_customer) references customers(id)
+--);
+--
+--insert
+--	into
+--	invoices(id, id_customer)
+--select
+--	distinct 
+--e.InvoiceNo,
+--e.CustomerID
+--from
+--	ecommerce e
+--
+--create table prod_inv( 
+--id_customer int,
+--id_invoice varchar(200),
+--id_products varchar(200),
+--quantity int,
+--price decimal(10, 2),
+--date timestamp,
+--foreign key (id_customer) references customers(id),
+--foreign key (id_invoice) references invoices(id),
+--foreign key (id_products) references products(id)
+--);
+--
+--insert into
+--	prod_inv(id_customer,id_invoice, id_products, quantity, price, date)
+--select distinct
+--    ct.id,
+--    i.id,
+--	p.id,
+--	e.Quantity,
+--	e.UnitPrice,
+--	e.InvoiceDate
+--from
+--	products p
+--inner join ecommerce e on
+--	e.StockCode = p.id
+--inner join invoices i on
+--	i.id = e.InvoiceNo
+--inner join customers ct on 
+--    ct.id = e.customerid 
+--
+--select
+--	*
+--from
+--	prod_inv
